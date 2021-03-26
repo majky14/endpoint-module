@@ -3,5 +3,166 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "endpoint-module": {
+      "projectType": "library",
+      "root": "projects/endpoint-module",
+      "sourceRoot": "projects/endpoint-module/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/endpoint-module/tsconfig.lib.json",
+            "project": "projects/endpoint-module/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/endpoint-module/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/endpoint-module/src/test.ts",
+            "tsConfig": "projects/endpoint-module/tsconfig.spec.json",
+            "karmaConfig": "projects/endpoint-module/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/endpoint-module/tsconfig.lib.json",
+              "projects/endpoint-module/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "endpoint-test": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/endpoint-test",
+      "sourceRoot": "projects/endpoint-test/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/endpoint-test",
+            "index": "projects/endpoint-test/src/index.html",
+            "main": "projects/endpoint-test/src/main.ts",
+            "polyfills": "projects/endpoint-test/src/polyfills.ts",
+            "tsConfig": "projects/endpoint-test/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/endpoint-test/src/favicon.ico",
+              "projects/endpoint-test/src/assets"
+            ],
+            "styles": [
+              "projects/endpoint-test/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/endpoint-test/src/environments/environment.ts",
+                  "with": "projects/endpoint-test/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "endpoint-test:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "endpoint-test:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "endpoint-test:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/endpoint-test/src/test.ts",
+            "polyfills": "projects/endpoint-test/src/polyfills.ts",
+            "tsConfig": "projects/endpoint-test/tsconfig.spec.json",
+            "karmaConfig": "projects/endpoint-test/karma.conf.js",
+            "assets": [
+              "projects/endpoint-test/src/favicon.ico",
+              "projects/endpoint-test/src/assets"
+            ],
+            "styles": [
+              "projects/endpoint-test/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/endpoint-test/tsconfig.app.json",
+              "projects/endpoint-test/tsconfig.spec.json",
+              "projects/endpoint-test/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/endpoint-test/e2e/protractor.conf.js",
+            "devServerTarget": "endpoint-test:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "endpoint-test:serve:production"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "endpoint-module"
 }
