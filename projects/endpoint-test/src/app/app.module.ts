@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { EndpointConfigToken, EndpointModule } from 'endpoint-module';
+import { ENDPOINT_CONFIG_TOKEN, EndpointModule } from 'endpoint-module';
 
 import { AppComponent } from './app.component';
 import { endpointConfig } from './config/endpoint.config';
+import { USER_ENDPOINT_TOKEN, UserEndpoint } from './endpoint/user.endpoint';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { endpointConfig } from './config/endpoint.config';
     EndpointModule
   ],
   providers: [
-    {provide: EndpointConfigToken, useValue: endpointConfig}
+    {provide: ENDPOINT_CONFIG_TOKEN, useValue: endpointConfig},
+    {provide: USER_ENDPOINT_TOKEN, useClass: UserEndpoint}
   ],
   bootstrap: [AppComponent]
 })

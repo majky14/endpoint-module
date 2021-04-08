@@ -15,7 +15,7 @@ Import `EndpointModule` in your `AppModule` and setup config in providers.
 Now you can decorate some property with `@EndpointDecorator` and create an endpoint.
 
     export class AppComponent implements OnInit {
-      @EndpointDecorator({endpoint: 'users'})
+      @EndpointDecorator('users')
       public users: Endpoint;
     }
 
@@ -23,7 +23,7 @@ If you now call `this.users.list().subscribe()` within `AppComponent` you will p
 
 We can also create an endpoint by `@EntityDecorator`. Simply create class which represent entity, extend the class with `Entity` and decorate with `@EntityDecorator`.
 
-    @EntityDecorator({endpoint: 'users'})
+    @EntityDecorator('users')
     export class User extends Entity {
       name: string;
       roles?: {
@@ -33,7 +33,7 @@ We can also create an endpoint by `@EntityDecorator`. Simply create class which 
 
 Now you can call `User.list().subscribe()` and you will see the same request as above.
 
-Finally, we can create an endpoint in a config. This approach allow us to create custom endpoint methods.
+Next, we can create an endpoint in a config. This approach allow us to create custom endpoint methods.
 For example, we want a request to `/users/profile` we can create custom endpoint class and define such method.
 
     export class UserEndpoint extends Endpoint<User> {
@@ -50,7 +50,7 @@ For this we have to include this endpoint in a config
             useValue: {
                 baseUrl: 'https://api.mocki.io/v1/469a9425',
                 endpoints: [
-                    {endpoint: 'users', customEndpoint: UserEndpoint}
+                    {endpointName: 'users', endpoint: UserEndpoint}
                 ]
             }
         }
@@ -59,7 +59,7 @@ For this we have to include this endpoint in a config
 Now we can retype endpoint class in `AppComponent` to new created `UserEndpoint` and call custom method.
 
     export class AppComponent implements OnInit {
-      @EndpointDecorator({endpoint: 'users'})
+      @EndpointDecorator('users')
       public users: UserEndpoint;
     }
     

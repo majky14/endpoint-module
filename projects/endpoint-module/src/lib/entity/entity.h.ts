@@ -4,7 +4,3 @@ export interface EntityOptions {
   params: Params;
   body: any;
 }
-
-export interface EntityDecoratorOptions {
-  endpoint: string;
-}

@@ -1,4 +1,4 @@
-import { Type } from '@angular/core';
+import { InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Endpoint } from './endpoint';
@@ -16,12 +16,11 @@ export interface ITransformer<T> {
 }
 
 export interface EndpointOptions {
-  endpoint: string;
-  customEndpoint?: Type<Endpoint<any>>;
+  endpointName: string;
+  endpoint?: Type<Endpoint<any>>;
+  endpointToken?: InjectionToken<Endpoint<any>>;
   requestTransformer?: Type<ITransformer<any>>;
+  requestTransformerToken?: InjectionToken<ITransformer<any>>;
   responseTransformer?: Type<ITransformer<any>>;
-}
-
-export interface EndpointDecoratorOptions {
-  endpoint: string;
+  responseTransformerToken?: InjectionToken<ITransformer<any>>;
 }

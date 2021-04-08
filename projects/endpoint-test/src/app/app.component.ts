@@ -10,7 +10,7 @@ import { UserEndpoint } from './endpoint/user.endpoint';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  @EndpointDecorator({endpoint: EndpointKey.USERS})
+  @EndpointDecorator(EndpointKey.USERS)
   public users: UserEndpoint;
 
   public ngOnInit(): void {

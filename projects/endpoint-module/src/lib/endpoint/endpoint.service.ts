@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Type } from '@angular/core';
-import { Endpoint } from './endpoint';
+import { Inject, Injectable, Injector } from '@angular/core';
 
-import { EndpointConfigToken, IEndpointConfig } from './endpoint.config';
-import { EndpointOptions, IEndpoint, ITransformer } from './endpoint.h';
+import { INetworkClient, NETWORK_CLIENT_TOKEN } from '../network-client';
+
+import { ENDPOINT_CONFIG_TOKEN, IEndpointConfig } from './endpoint.config';
+import { IEndpoint } from './endpoint.h';
 import { BaseTransformer } from './endpoint.transformer';
+import { Endpoint } from './endpoint';
 
 @Injectable({ providedIn: 'root' })
 export class EndpointService {
@@ -13,31 +14,45 @@ export class EndpointService {
   private _endpoints: Map<string, IEndpoint<any>> = new Map<string, IEndpoint<any>>();
 
   constructor(
-    protected http: HttpClient,
-    @Inject(EndpointConfigToken) protected config: IEndpointConfig
+    protected inj: Injector,
+    @Inject(NETWORK_CLIENT_TOKEN) protected client: INetworkClient,
+    @Inject(ENDPOINT_CONFIG_TOKEN) protected config: IEndpointConfig
   ) {
     EndpointService.instance = this;
-    (config?.endpoints ?? []).forEach(endpoint => {
-      this.create(endpoint);
-    });
   }
 
-  public create<T>(options: EndpointOptions): IEndpoint<T> {
-    const existing = this.get<T>(options.endpoint);
+  public create<T>(endpoint: string): IEndpoint<T> {
+    const existing = this.get<T>(endpoint);
     if (existing) {
       return existing;
     }
-    const endpointConstructor: Type<IEndpoint<T>> = options.customEndpoint || Endpoint;
-    const requestTransformer: Type<ITransformer<T>> = options.requestTransformer || BaseTransformer;
-    const responseTransformer: Type<ITransformer<T>> = options.responseTransformer || BaseTransformer;
-    const endpoint = new endpointConstructor(
-      `${this.config.baseUrl}/${options.endpoint}`,
-      this.http,
-      new requestTransformer(),
-      new responseTransformer(),
-    );
-    this._endpoints.set(options.endpoint, endpoint);
-    return endpoint;
+    const options = this.config.endpoints?.find(e => e.endpointName === endpoint) || { endpointName: endpoint };
+    let endpointInstance;
+    if (options.endpointToken) {
+      endpointInstance = this.inj.get(options.endpointToken);
+    } else {
+      options.endpoint = options.endpoint || Endpoint;
+      let requestTransformer;
+      if (options.requestTransformerToken) {
+        requestTransformer = this.inj.get(options.requestTransformerToken);
+      } else {
+        requestTransformer = new (options.requestTransformer || BaseTransformer)();
+      }
+      let responseTransformer;
+      if (options.responseTransformerToken) {
+        responseTransformer = this.inj.get(options.responseTransformerToken);
+      } else {
+        responseTransformer = new (options.responseTransformer || BaseTransformer)();
+      }
+      endpointInstance = new options.endpoint(
+        `${this.config.baseUrl}/${options.endpointName}`,
+        this.client,
+        requestTransformer,
+        responseTransformer
+      );
+    }
+    this._endpoints.set(options.endpointName, endpointInstance);
+    return endpointInstance;
   }
 
   public get<T>(key: string): IEndpoint<T> {
