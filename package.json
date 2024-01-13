@@ -6,7 +6,13 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lib:build": "ng build lib",
+    "lib:build:prod": "npm run lib:build -- --configuration=production",
+    "lib:start": "npm run lib:build -- --watch",
+    "lib:link": "cd dist/lib && npm link",
+    "lib:publish": "cd dist/lib && npm publish",
+    "lib:publish:beta": "npm run lib:publish -- --tag beta"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +29,7 @@
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^17.0.10",
     "@angular/cli": "^17.0.10",
     "@angular/compiler-cli": "^17.0.0",
     "@types/jasmine": "~5.1.0",
@@ -32,6 +39,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^17.0.0",
     "typescript": "~5.2.2"
   }
 }

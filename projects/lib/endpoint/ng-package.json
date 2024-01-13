@@ -1,0 +1,5 @@
+{
+  "lib": {
+    "entryFile": "../endpoint.public-api.ts"
+  }
+}

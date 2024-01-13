@@ -1,0 +1,5 @@
+{
+  "lib": {
+    "entryFile": "../entity.public-api.ts"
+  }
+}
